@@ -13,8 +13,8 @@
         }
     });
     // 模拟数据
- let data = localStorage.getItem('mList')?JSON.parse(localStorage.getItem('mList')):[];
-      let searchData=[];
+    let data = localStorage.getItem('mList')?JSON.parse(localStorage.getItem('mList')):[];
+    let searchData=[];
     //获取元素
     let startbox=document.querySelector('.start');
     let audiobox=document.querySelector('audio');
@@ -42,65 +42,67 @@
     // 加载数量结束
     // 加载播放列表
     function loadPlayList(){
-     if(data.length){
-         let str='';//用来累计播放项
-         for(let i=0;i<data.length;i++){
-             str+='<li>';
-             str+='<span class="left">'+data[i].name+'</span>';
-             str+='<i>X</i>';
-             str+='<span class="right">';
-             for(let j=0; j<data[i].ar.length; j++){
-                 str+=data[i].ar[j].name+' ';
-             }
-             str+='</span>';
+        if(data.length){
+            let str='';//用来累计播放项
+            for(let i=0;i<data.length;i++){
+                str+='<li>';
+                str+='<span class="left">'+data[i].name+'</span>';
+                str+='<i>X</i>';
+                str+='<span class="right">';
+                for(let j=0; j<data[i].ar.length; j++){
+                    str+=data[i].ar[j].name+' ';
+                }
+                str+='</span>';
 
-             str+='</li>';
+                str+='</li>';
 
-         }
-         listBox.innerHTML=str;
-     }
+            }
+            listBox.innerHTML=str;
+        }
     }
     loadPlayList();
     // 请求服务器
     $('.search').on('keydown',function (e) {
         // 13代表的是按下回车
         if (e.keyCode===13){
-        $.ajax({
-            url:'https://api.imjad.cn/cloudmusic/',
-            data:{
-                type:'search',
-                s:this.value
-            },
-            success:function (data) {
+            $.ajax({
+                url:'http://music.163.com/api/search/pc',
+                data:{
+                    type:1,
+                    s:this.value,
+                    offset:0,
+                    limit:10
+                },
+                success:function (data) {
 
-                console.log(data);
-               searchData=data.result.songs;
-               var str='';
-        for(var i=0; i<searchData.length; i++){
-            str+='<li>';
-            str+='<span class="left song">'+searchData[i].name+'</span>';
-            str+='<span class="right song">';
-               for(let j=0; j<searchData[i].ar.length; j++){
-                   str+=searchData[i].ar[j].name+' ';
-               }
-            str+='</span>';
-            str+='</li>';
+                    console.log(data);
+                    searchData=data.result.songs;
+                    var str='';
+                    for(var i=0; i<searchData.length; i++){
+                        str+='<li>';
+                        str+='<span class="left song">'+searchData[i].name+'</span>';
+                        str+='<span class="right song">';
+                        for(let j=0; j<searchData[i].ar.length; j++){
+                            str+=searchData[i].ar[j].name+' ';
+                        }
+                        str+='</span>';
+                        str+='</li>';
 
-        }
-        $('.searchUl').html(str);
-            },
-            error:function (err) {
-                console.log(err);
-            }
-        });
-        this.value='';
+                    }
+                    $('.searchUl').html(str);
+                },
+                error:function (err) {
+                    console.log(err);
+                }
+            });
+            this.value='';
             $('.searchUl').css("display","block");
         }
     });
 
     $('.searchUl').on('click','li',function () {
-      data.push(searchData[$(this).index()]);
-      localStorage.setItem('mList',JSON.stringify(data));
+        data.push(searchData[$(this).index()]);
+        localStorage.setItem('mList',JSON.stringify(data));
 
         loadPlayList();
         index=data.length-1;
@@ -109,24 +111,24 @@
         loadNum();
     });
     $(listBox).on('click','i',function (e) {
-         data.splice( $(this).parent().index(),1);
+        data.splice( $(this).parent().index(),1);
         localStorage.setItem('mList',JSON.stringify(data));
         loadPlayList();
         e.stopPropagation();
         loadNum();
     })
-   // 切换选择列表
-   function   checkPlayList() {
-       let playList=document.querySelectorAll('.play-list-box li');
-       for(let i=0;i<data.length;i++){
-           playList[i].className='';
-       }
-       playList[index].className='active';
-   }
-   function  formatTime(time) {
-       return time>9?time:'0'+time;
-   }
-   // 初始化歌曲
+    // 切换选择列表
+    function   checkPlayList() {
+        let playList=document.querySelectorAll('.play-list-box li');
+        for(let i=0;i<data.length;i++){
+            playList[i].className='';
+        }
+        playList[index].className='active';
+    }
+    function  formatTime(time) {
+        return time>9?time:'0'+time;
+    }
+    // 初始化歌曲
     function init(){
         rotateDeg=0;
         checkPlayList();
@@ -140,8 +142,8 @@
         songSinger.innerHTML=str;
         imglogo.src=data[index].al.picUrl;
     }
-   init();
-   // 播放
+    init();
+    // 播放
     function play(){
         audiobox.play();
         clearInterval(timer);
@@ -154,22 +156,22 @@
     // 播放和暂停
     startbox.addEventListener('click',function () {
         // 检测是播放还是暂停
-      if(audiobox.paused){
-          play();
-      }else{
-          clearInterval(timer);
-          audiobox.pause();
-          startbox.style.backgroundPositionY='-198px';
-      }
+        if(audiobox.paused){
+            play();
+        }else{
+            clearInterval(timer);
+            audiobox.pause();
+            startbox.style.backgroundPositionY='-198px';
+        }
     });
-   // 下一曲
+    // 下一曲
     nextBox.addEventListener('click',function () {
         index++;
         index=index>data.length-1?0:index;
         init();
         play();
     });
-        //提示框
+    //提示框
     function info(str){
         infoEl.style.display='block';
         infoEl.innerHTML=str;
@@ -185,49 +187,49 @@
         play();
     });
     // 递归算法
-      function randomNu(){
-          let randomNum=Math.floor( Math.random()*data.length);
-          if(randomNum===index){
-              randomNum=randomNu();
-          }
-          return randomNum;
-      }
+    function randomNu(){
+        let randomNum=Math.floor( Math.random()*data.length);
+        if(randomNum===index){
+            randomNum=randomNu();
+        }
+        return randomNum;
+    }
     // 完成准备
     audiobox.addEventListener('canplay',function () {
-       let totalTime= audiobox.duration;//总时长
+        let totalTime= audiobox.duration;//总时长
         let totalM=parseInt(totalTime/60);
         let totalS=parseInt(totalTime%60);
         totalTimeSpan.innerHTML=formatTime(totalM)+':'+formatTime(totalS);
-       audiobox.addEventListener('timeupdate',function () {
-                 let currenTime=audiobox.currentTime;
-                 let currentM=parseInt(currenTime/60);
-                 let currentS=parseInt(currenTime%60);
-                 nowTimeSpan.innerHTML=formatTime(currentM)+':'+formatTime(currentS);
-                  let barWidth=ctrlBars.clientWidth;
-                  let position=currenTime/totalTime * barWidth;
-                  nowbars.style.width=position+'px';
-                  ctrlbtn.style.left=position-8+'px';
-                  if(audiobox.ended){
-                      switch (modM) {
-                          // 顺序播放
-                          case 0:
-                              nextBox.click();
-                              break;
-                          case 1: // 单曲循环
-                              init();
-                              play();
-                              break;
-                          case 2:
-                           index=randomNu();
-                          init();
-                          play();
-                              break;
-                      }
-                  }
-       });
-       ctrlBars.addEventListener('click',function (e) {
-           audiobox.currentTime=e.offsetX / ctrlBars.clientWidth * audiobox.duration;
-       });
+        audiobox.addEventListener('timeupdate',function () {
+            let currenTime=audiobox.currentTime;
+            let currentM=parseInt(currenTime/60);
+            let currentS=parseInt(currenTime%60);
+            nowTimeSpan.innerHTML=formatTime(currentM)+':'+formatTime(currentS);
+            let barWidth=ctrlBars.clientWidth;
+            let position=currenTime/totalTime * barWidth;
+            nowbars.style.width=position+'px';
+            ctrlbtn.style.left=position-8+'px';
+            if(audiobox.ended){
+                switch (modM) {
+                    // 顺序播放
+                    case 0:
+                        nextBox.click();
+                        break;
+                    case 1: // 单曲循环
+                        init();
+                        play();
+                        break;
+                    case 2:
+                        index=randomNu();
+                        init();
+                        play();
+                        break;
+                }
+            }
+        });
+        ctrlBars.addEventListener('click',function (e) {
+            audiobox.currentTime=e.offsetX / ctrlBars.clientWidth * audiobox.duration;
+        });
 
     });
     // 完成结束
@@ -286,7 +288,7 @@
         play();
     });
     $('.voice').on('click',function () {
-         falg=!falg;
+        falg=!falg;
         if (falg){
             $('.lineDiv').css("display","block")
         }else{
