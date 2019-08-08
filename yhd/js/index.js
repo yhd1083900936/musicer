@@ -68,10 +68,9 @@
             $.ajax({
                 url:'http://music.163.com/api/search/pc',
                 data:{
-                    type:1,
+                    type:search,
                     s:this.value,
-                    offset:0,
-                    limit:10
+                    
                 },
                 success:function (data) {
 
